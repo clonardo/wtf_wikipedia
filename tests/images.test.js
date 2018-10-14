@@ -1,6 +1,7 @@
 'use strict';
 var test = require('tape');
 var wtf = require('./lib');
+var readFile = require('./lib/_cachedPage');
 
 test('gallery-tag', t => {
   var str = `
@@ -23,14 +24,14 @@ The paintings have the freedom and energy of  sketches, using warm and cool ligh
   var templ = doc.templates(0);
   t.deepEqual(templ.template, 'gallery', 'document-has-template');
   t.deepEqual(templ.images.length, 5, '5 images');
-  t.deepEqual(templ.images[0].caption.links[0].page, 'Freyja', 'image has caption');
+  t.deepEqual(templ.images[0].caption.links(0).page, 'Freyja', 'image has caption');
   t.deepEqual(doc.images().length, 5, 'images() finds gallery');
   t.end();
 });
 
 test('gallery-tag-2', t => {
 
-  var doc=wtf(`hello
+  var doc = wtf(`hello
 
   <gallery>
    Culex-female.jpg|Stechmücke
@@ -43,7 +44,7 @@ test('gallery-tag-2', t => {
    Sciara_analis_de.jpg|Trauermücke
   </gallery>
 
-  foo`)
+  foo`);
   var templ = doc.templates(0);
   t.deepEqual(templ.template, 'gallery', 'document-has-template');
   t.deepEqual(templ.images.length, 8, '8 images');
@@ -61,5 +62,11 @@ test('gallery-template', t => {
   var templ = wtf(str).templates(0);
   t.deepEqual(templ.template, 'gallery', 'document-has-template');
   t.deepEqual(templ.images.length, 4, 'has 4 images');
+  t.end();
+});
+
+test('from-infobox', t => {
+  let doc = readFile('jodie_emery');
+  t.equal(doc.infobox(0).images(0).thumb(), 'https://wikipedia.org/wiki/Special:Redirect/file/Marc_Emery_and_Jodie_Emery.JPG?width=300', 'has correct thumbnail');
   t.end();
 });

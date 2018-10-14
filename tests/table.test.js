@@ -216,6 +216,8 @@ test('messy-table-test', t => {
   var obj = wtf(messy);
   var table = obj.tables(0).json();
   t.equal(table[1]['col1'].text, 'Nibelungen Bridge to Worms', 'col1 text');
+  // var keyVal=obj.tables(0).keyValue()
+  // t.equal()
   t.end();
 });
 
@@ -280,10 +282,10 @@ test('sortable table', t => {
   |-
   !Average:||1.82
   |}`;
-  let doc = wtf(str);
-  var row=doc.tables(0).data[0]
-  t.equal(row.Height.text(),'1.85','got height')
-  t.equal(row['Name and Surname'].text(),'John Smith','got name')
+  var doc = wtf(str);
+  var row = doc.tables(0).data[0];
+  t.equal(row.Height.text(), '1.85', 'got height');
+  t.equal(row['Name and Surname'].text(), 'John Smith', 'got name');
   t.end();
 });
 
@@ -310,8 +312,27 @@ test('missing-row test', t => {
   |-align="center" bgcolor="bbffbb"
   |}
   Actual first sentence  is here`;
-  var row=wtf(str).tables(0).data[0]
-  t.equal(row.Save.text(),'','got empty property')
-  t.equal(row.Record.text(),'2–0','got last property')
+  var row = wtf(str).tables(0).data[0];
+  t.equal(row.Save.text(), '', 'got empty property');
+  t.equal(row.Record.text(), '2–0', 'got last property');
+  t.end();
+});
+
+
+test('table newline removal', t => {
+  var str = `hello this is the top
+{| class="wikitable" style="font-size: 95%;"
+| 1
+| [[Daugpiļs]]
+|-
+| 2
+| [[Jākubmīsts]]
+|-
+| 3
+| [[Rēzne]]
+|}
+`;
+  var doc = wtf(str);
+  t.equal(doc.text(), 'hello this is the top', 'text on top');
   t.end();
 });

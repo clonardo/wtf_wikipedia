@@ -15,3 +15,36 @@ i believe that 5===true and y===false
   t.equal(sections[1].title, 'Foo Bar', 'clean-section');
   t.end();
 });
+
+
+test('catch indented first sentence', function(t) {
+  var str = `:hello one
+ok now you start`;
+  var doc = wtf(str);
+  t.equal(doc.text(), 'ok now you start');
+  t.end();
+});
+
+test('empty intro text', function(t) {
+  var str = `==English==
+  how bout that
+  `;
+  var sections = wtf(str).sections().map(s => s.title());
+  t.deepEqual(sections, ['English'], 'leading-section');
+
+  str = `
+==English==
+how bout that`;
+  sections = wtf(str).sections().map(s => s.title());
+  t.deepEqual(sections, ['English'], 'newline-section');
+
+  str = `
+==English==
+how bout that
+
+
+`;
+  sections = wtf(str).sections().map(s => s.title());
+  t.deepEqual(sections, ['English'], 'extra-whitespace');
+  t.end();
+});
